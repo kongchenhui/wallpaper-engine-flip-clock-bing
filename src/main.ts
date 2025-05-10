@@ -2,10 +2,14 @@ import FlipClock from "flipclock";
 import { getBingPaperData } from "@/api";
 import "@/style/index.less";
 
-const position = {
-  x: 50,
-  y: 40,
+const configs = {
+  position_x: 50,
+  position_y: 40,
   scale: 1,
+  mode: "image",
+  image: "",
+  video: "",
+  url: "",
 };
 
 let isCustomWallpaper = false;
@@ -16,39 +20,32 @@ new FlipClock(document.querySelector(".clock"), {
   face: "TwentyFourHourClock",
 });
 
-setInterval(() => {
-  queryImageData();
-}, 10 * 60 * 1000);
-
-queryImageData();
-
 startInterval();
+
+const positions = ["position_x", "position_y", "scale"] as const;
+const backgrounds = ["image", "video", "mode"] as const;
+const papers = ["image", "video"] as const;
 
 window.wallpaperPropertyListener = {
   applyUserProperties: function (properties) {
-    if (properties.position_x) {
-      position.x = properties.position_x.value;
-      updateClockPosition();
-    }
-    if (properties.position_y) {
-      position.y = properties.position_y.value;
-      updateClockPosition();
-    }
-    if (properties.scale) {
-      position.scale = properties.scale.value;
-      updateClockPosition();
-    }
-    if (properties.custom_wallpaper) {
-      if (!properties.custom_wallpaper.value) {
-        isCustomWallpaper = false;
-        queryImageData();
-        startInterval();
-        return;
+    for (const prop of positions) {
+      if (properties[prop]) {
+        configs[prop] = properties[prop].value;
       }
-      isCustomWallpaper = true;
-      stopInterval();
-      var customWallpaper = "file:///" + properties.custom_wallpaper.value;
-      updateImageSrc(customWallpaper);
+    }
+    for (const prop of backgrounds) {
+      if (properties[prop]) {
+        configs[prop] = properties[prop].value;
+        if (configs[prop] && papers.find((v) => v === prop)) {
+          configs[prop] = "file:///" + configs[prop];
+        }
+      }
+    }
+    if (positions.some((prop) => properties[prop])) {
+      updatePosition();
+    }
+    if (backgrounds.some((prop) => properties[prop])) {
+      updateWallpaper();
     }
   },
 };
@@ -65,27 +62,41 @@ function queryImageData() {
       stopInterval();
       return;
     }
-    updateImageSrc(url);
+    configs.url = url;
+    const bg = document.querySelector(".bg") as HTMLElement;
+    bg.innerHTML = `<img class="paper" src="${configs.url}" />`;
   });
 }
 
-function updateClockPosition() {
+function updatePosition() {
   const clock = document.querySelector(".clock") as HTMLElement;
-  clock.style.left = `${position.x}%`;
-  clock.style.top = `${position.y}%`;
-  clock.style.scale = `${position.scale}`;
+  clock.style.left = `${configs.position_x}%`;
+  clock.style.top = `${configs.position_y}%`;
+  clock.style.scale = `${configs.scale}`;
   clock.style.transformOrigin = `left top`;
 }
 
-function updateImageSrc(src: string) {
-  const img = document.querySelector(".paper") as HTMLImageElement;
-  img.src = src;
+function updateWallpaper() {
+  const bg = document.querySelector(".bg") as HTMLElement;
+  if (configs.mode === "image" && configs.image) {
+    isCustomWallpaper = true;
+    stopInterval();
+    bg.innerHTML = `<img class="paper" src="${configs.image}" />`;
+  } else if (configs.mode === "video" && configs.video) {
+    isCustomWallpaper = true;
+    stopInterval();
+    bg.innerHTML = `<video class="paper" autoplay loop muted playsinline src="${configs.video}"></video>`;
+  } else {
+    isCustomWallpaper = false;
+    startInterval();
+  }
 }
 
 function startInterval() {
   if (timer) {
     window.clearInterval(timer);
   }
+  queryImageData();
   timer = window.setInterval(() => {
     queryImageData();
   }, 5 * 60 * 1000);
