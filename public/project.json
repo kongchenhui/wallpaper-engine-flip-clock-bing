@@ -1,0 +1,101 @@
+{
+	"contentrating" : "Everyone",
+	"description" : "获取必应每日壁纸，翻页时钟显示时间。\r\n· 支持自定义时钟大小和位置。\r\n· 支持自定义壁纸。\r\nrepositories: https://github.com/kongchenhui/wapper-engine-bing-paper",
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"image" : 
+			{
+				"condition" : "mode.value == \"image\"",
+				"index" : 1,
+				"order" : 101,
+				"text" : "<br/>自定义图片<br/>custom image",
+				"type" : "file",
+				"value" : ""
+			},
+			"mode" : 
+			{
+				"index" : 0,
+				"options" : 
+				[
+					{
+						"label" : "图片 image",
+						"value" : "image"
+					},
+					{
+						"label" : "视频 video",
+						"value" : "video"
+					}
+				],
+				"order" : 100,
+				"text" : "<br/>壁纸模式<br/>Wallpaper Mode",
+				"type" : "combo",
+				"value" : "image"
+			},
+			"position_x" : 
+			{
+				"fraction" : false,
+				"index" : 3,
+				"max" : 100,
+				"min" : 0,
+				"order" : 103,
+				"text" : "<br/>时钟位置x<br/>clock position x",
+				"type" : "slider",
+				"value" : 50
+			},
+			"position_y" : 
+			{
+				"fraction" : false,
+				"index" : 4,
+				"max" : 100,
+				"min" : 0,
+				"order" : 104,
+				"text" : "<br/>时钟位置y<br/>clock position y",
+				"type" : "slider",
+				"value" : 40
+			},
+			"scale" : 
+			{
+				"fraction" : true,
+				"index" : 5,
+				"max" : 3,
+				"min" : 0,
+				"order" : 105,
+				"precision" : 2,
+				"step" : 0.1,
+				"text" : "<br/>时钟缩放<br/>clock scale",
+				"type" : "slider",
+				"value" : 1
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"video" : 
+			{
+				"condition" : "mode.value == \"video\"",
+				"fileType" : "video",
+				"index" : 2,
+				"order" : 102,
+				"text" : "<br/>自定义视频<br/>custom video",
+				"type" : "file",
+				"value" : ""
+			}
+		}
+	},
+	"preview" : "preview.jpg",
+	"ratingsex" : "none",
+	"ratingviolence" : "none",
+	"tags" : [ "Nature" ],
+	"title" : "必应每日壁纸+翻页时钟",
+	"type" : "Web",
+	"version" : 10,
+	"visibility" : "public",
+	"workshopid" : "2633328487",
+	"workshopurl" : "steam://url/CommunityFilePage/2633328487"
+}
