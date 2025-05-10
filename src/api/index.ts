@@ -20,7 +20,7 @@ interface BingImageData {
 
 export function getBingPaperData() {
   return request(
-    "https:/raw.onmicrosoft.cn/Bing-Wallpaper-Action/main/data/zh-CN_update.json",
+    `https:/raw.onmicrosoft.cn/Bing-Wallpaper-Action/main/data/zh-CN_update.json?t=${Date.now()}`,
     {
       method: "GET",
     }
