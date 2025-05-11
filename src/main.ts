@@ -22,7 +22,7 @@ const clock = new FlipClock(document.querySelector(".clock"), {
 
 // 每隔一分钟重置，以防止时钟不准
 setInterval(() => {
-  clock.stop().reset().start();
+  clock.reset().start();
 }, 1000 * 60);
 
 startInterval();
