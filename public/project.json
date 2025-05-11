@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Get Bing daily wallpapers, flip clock to display time. \r\n· Support custom clock size and position. \r\n· Support custom wallpapers. \r\nrepositories: https://github.com/kongchenhui/wapper-engine-bing-paper",
+	"description" : "Get Bing daily wallpapers, flip clock to display time. \r\n· Support custom clock size and position. \r\n· Support custom wallpapers. \r\nrepositories: https://github.com/kongchenhui/wapper-engine-flip-clock-bing",
 	"file" : "index.html",
 	"general" : 
 	{
