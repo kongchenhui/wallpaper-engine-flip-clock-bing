@@ -5,16 +5,23 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "patch": "patch-package"
   },
   "devDependencies": {
     "@types/node": "^22.15.17",
     "less": "^4.3.0",
     "less-loader": "^12.3.0",
+    "patch-package": "^8.0.0",
     "typescript": "~5.7.3",
     "vite": "^6.1.1"
   },
   "dependencies": {
     "flipclock": "^0.10.8"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "flipclock@0.10.8": "patches/flipclock@0.10.8.patch"
+    }
   }
 }
