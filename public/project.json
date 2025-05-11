@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "获取必应每日壁纸，翻页时钟显示时间。\r\n· 支持自定义时钟大小和位置。\r\n· 支持自定义壁纸。\r\nrepositories: https://github.com/kongchenhui/wapper-engine-bing-paper",
+	"description" : "Get Bing daily wallpapers, flip clock to display time. \r\n· Support custom clock size and position. \r\n· Support custom wallpapers. \r\nrepositories: https://github.com/kongchenhui/wapper-engine-bing-paper",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -92,7 +92,7 @@
 	"ratingsex" : "none",
 	"ratingviolence" : "none",
 	"tags" : [ "Nature" ],
-	"title" : "必应每日壁纸+翻页时钟",
+	"title" : "Bing Daily Wallpaper + Flip Clock",
 	"type" : "Web",
 	"version" : 10,
 	"visibility" : "public",
