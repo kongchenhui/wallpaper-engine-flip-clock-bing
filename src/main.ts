@@ -16,9 +16,14 @@ let isCustomWallpaper = false;
 
 let timer: number | null = null;
 
-new FlipClock(document.querySelector(".clock"), {
+const clock = new FlipClock(document.querySelector(".clock"), {
   face: "TwentyFourHourClock",
 });
+
+// 每隔一分钟重置，以防止时钟不准
+setInterval(() => {
+  clock.stop().reset().start();
+}, 1000 * 60);
 
 startInterval();
 
@@ -99,7 +104,7 @@ function startInterval() {
   queryImageData();
   timer = window.setInterval(() => {
     queryImageData();
-  }, 5 * 60 * 1000);
+  }, 10 * 60 * 1000);
 }
 
 function stopInterval() {
