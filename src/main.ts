@@ -61,11 +61,12 @@ function queryImageData() {
     stopInterval();
     return;
   }
+  const t = timer;
   AsyncFuncRetry(getBingPaperData, [], {
     delay: 10 * 1000,
     retries: 30,
     stop: () => {
-      return isCustomWallpaper;
+      return isCustomWallpaper || t !== timer;
     },
   })
     .then((images) => {
@@ -114,10 +115,10 @@ function startInterval() {
   if (timer) {
     window.clearInterval(timer);
   }
-  queryImageData();
   timer = window.setInterval(() => {
     queryImageData();
   }, 10 * 60 * 1000);
+  queryImageData();
 }
 
 function stopInterval() {
