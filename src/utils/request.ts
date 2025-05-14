@@ -14,3 +14,35 @@ export function request<T = any>(
       throw error;
     });
 }
+
+interface AsyncFuncRetryOptions {
+  retries?: number;
+  delay?: number;
+  stop?: () => boolean;
+}
+export function AsyncFuncRetry<T, U extends any[]>(
+  func: (...args: U) => Promise<T>,
+  args: U,
+  options?: AsyncFuncRetryOptions
+): Promise<T> {
+  const { retries = 3, delay = 1000, stop = () => false } = options || {};
+
+  return new Promise((resolve, reject) => {
+    func(...args)
+      .then(resolve)
+      .catch((error) => {
+        if (retries > 0 && !stop()) {
+          setTimeout(() => {
+            AsyncFuncRetry(func, args, {
+              ...options,
+              retries: retries - 1,
+            })
+              .then(resolve)
+              .catch(reject);
+          }, delay);
+        } else {
+          reject(error);
+        }
+      });
+  });
+}

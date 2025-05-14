@@ -1,6 +1,7 @@
 import FlipClock from "flipclock";
 import { getBingPaperData } from "@/api";
 import "@/style/index.less";
+import { AsyncFuncRetry } from "./utils/request";
 
 const configs = {
   position_x: 50,
@@ -60,17 +61,29 @@ function queryImageData() {
     stopInterval();
     return;
   }
-  getBingPaperData().then((images) => {
-    const image = images[0];
-    const url = `https://cn.bing.com${image.url}`;
-    if (isCustomWallpaper) {
-      stopInterval();
-      return;
-    }
-    configs.url = url;
-    const bg = document.querySelector(".bg") as HTMLElement;
-    bg.innerHTML = `<img class="paper" src="${configs.url}" />`;
-  });
+  AsyncFuncRetry(getBingPaperData, [], {
+    delay: 10 * 1000,
+    retries: 30,
+    stop: () => {
+      return isCustomWallpaper;
+    },
+  })
+    .then((images) => {
+      const image = images[0];
+      const url = `https://cn.bing.com${image.url}`;
+      if (isCustomWallpaper) {
+        stopInterval();
+        return;
+      }
+      configs.url = url;
+      const bg = document.querySelector(".bg") as HTMLElement;
+      bg.innerHTML = `<img class="paper" src="${configs.url}" />`;
+    })
+    .catch(() => {
+      if (isCustomWallpaper) {
+        stopInterval();
+      }
+    });
 }
 
 function updatePosition() {
