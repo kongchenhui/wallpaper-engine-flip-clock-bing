@@ -1,18 +1,17 @@
-export function request<T = any>(
+export async function request<T = any>(
   url: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
-  return fetch(url, options)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-      throw error;
-    });
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
 }
 
 interface AsyncFuncRetryOptions {
@@ -20,10 +19,11 @@ interface AsyncFuncRetryOptions {
   delay?: number;
   stop?: () => boolean;
 }
+
 export function AsyncFuncRetry<T, U extends any[]>(
   func: (...args: U) => Promise<T>,
   args: U,
-  options?: AsyncFuncRetryOptions
+  options?: AsyncFuncRetryOptions,
 ): Promise<T> {
   const { retries = 3, delay = 1000, stop = () => false } = options || {};
 

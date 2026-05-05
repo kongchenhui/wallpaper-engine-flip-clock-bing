@@ -18,13 +18,11 @@ interface BingImageData {
   hs: any[];
 }
 
-export function getBingPaperData() {
-  return request(
-    `https:/raw.onmicrosoft.cn/Bing-Wallpaper-Action/main/data/zh-CN_update.json?t=${Date.now()}`,
+export async function getBingPaperData() {
+  const res = await request(
+    `https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN`,
     {
       method: "GET",
-    }
-  ).then((res) => {
-    return res.images as BingImageData[];
-  });
+    });
+  return res.images as BingImageData[];
 }

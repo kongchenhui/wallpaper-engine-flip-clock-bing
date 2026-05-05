@@ -71,7 +71,7 @@ function queryImageData() {
   })
     .then((images) => {
       const image = images[0];
-      const url = `https://cn.bing.com${image.url}`;
+      const url = `https://cn.bing.com${image.url}?t=${Date.now()}`;
       if (isCustomWallpaper) {
         stopInterval();
         return;
@@ -117,7 +117,7 @@ function startInterval() {
   }
   timer = window.setInterval(() => {
     queryImageData();
-  }, 10 * 60 * 1000);
+  }, 60 * 60 * 1000);
   queryImageData();
 }
 
