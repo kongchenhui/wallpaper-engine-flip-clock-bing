@@ -71,7 +71,10 @@ function queryImageData() {
   })
     .then((images) => {
       const image = images[0];
-      const url = `https://cn.bing.com${image.url}?t=${Date.now()}`;
+      const url = `https://cn.bing.com${image.url}?t=${Date.now()}`.replace(
+        /1920x1080/g,
+        "UHD",
+      );
       if (isCustomWallpaper) {
         stopInterval();
         return;
@@ -115,9 +118,12 @@ function startInterval() {
   if (timer) {
     window.clearInterval(timer);
   }
-  timer = window.setInterval(() => {
-    queryImageData();
-  }, 60 * 60 * 1000);
+  timer = window.setInterval(
+    () => {
+      queryImageData();
+    },
+    60 * 60 * 1000,
+  );
   queryImageData();
 }
 
