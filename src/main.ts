@@ -71,7 +71,7 @@ function queryImageData() {
   })
     .then((images) => {
       const image = images[0];
-      const url = `https://cn.bing.com${image.url}?t=${Date.now()}`.replace(
+      const url = `https://cn.bing.com${image.url}`.replace(
         /1920x1080/g,
         "UHD",
       );
