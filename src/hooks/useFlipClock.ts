@@ -18,10 +18,10 @@ export function useFlipClock(elementRef: Ref<HTMLElement | null>) {
       const displayedTime: Date = clockInstance.value?.value;
       if (!displayedTime) return;
       const diff = Math.abs(displayedTime.getTime() - Date.now());
-      if (diff > 30 * 1000) {
+      if (diff > 10_000) {
         clockInstance.reset();
       }
-    }, 5 * 1000);
+    }, 5_000);
   }
 
   /** 停止周期性偏差检查定时器 */
