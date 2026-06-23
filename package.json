@@ -5,19 +5,22 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vue-tsc --noEmit && vite build",
     "patch": "patch-package"
   },
   "devDependencies": {
     "@types/node": "^22.15.17",
+    "@vitejs/plugin-vue": "^5.2.4",
     "less": "^4.3.0",
     "less-loader": "^12.3.0",
     "patch-package": "^8.0.0",
     "typescript": "~5.7.3",
-    "vite": "^6.1.1"
+    "vite": "^6.1.1",
+    "vue-tsc": "^2.2.12"
   },
   "dependencies": {
-    "flipclock": "^0.10.8"
+    "flipclock": "^0.10.8",
+    "vue": "^3.5.38"
   },
   "pnpm": {
     "patchedDependencies": {

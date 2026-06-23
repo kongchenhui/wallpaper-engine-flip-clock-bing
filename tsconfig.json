@@ -22,6 +22,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "jsx": "preserve",
     "paths": {
       "@/*": [
         "src/*"
@@ -29,6 +30,7 @@
     }
   },
   "include": [
-    "src"
+    "src/**/*.ts",
+    "src/**/*.vue"
   ]
 }
