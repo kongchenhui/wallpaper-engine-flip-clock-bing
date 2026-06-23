@@ -10,6 +10,39 @@ export function useFlipClock(elementRef: Ref<HTMLElement | null>) {
   let clockInstance: any = null;
   let resetTimer: ReturnType<typeof setInterval> | null = null;
 
+  /** 启动周期性偏差检查定时器 */
+  function startResetChecker() {
+    if (resetTimer) return;
+    resetTimer = setInterval(() => {
+      if (!clockInstance) return;
+      const displayedTime: Date = clockInstance.value?.value;
+      if (!displayedTime) return;
+      const diff = Math.abs(displayedTime.getTime() - Date.now());
+      if (diff > 30 * 1000) {
+        clockInstance.reset();
+      }
+    }, 5 * 1000);
+  }
+
+  /** 停止周期性偏差检查定时器 */
+  function stopResetChecker() {
+    if (resetTimer) {
+      clearInterval(resetTimer);
+      resetTimer = null;
+    }
+  }
+
+  /** 页面可见性变化：后台暂停计时器避免 rAF 停摆导致漂移，前台恢复并同步时间 */
+  function handleVisibilityChange() {
+    if (!clockInstance) return;
+    if (document.hidden) {
+      stopResetChecker();
+    } else {
+      clockInstance.reset();
+      startResetChecker();
+    }
+  }
+
   onMounted(() => {
     if (!elementRef.value) return;
 
@@ -17,17 +50,13 @@ export function useFlipClock(elementRef: Ref<HTMLElement | null>) {
       face: "TwentyFourHourClock",
     });
 
-    // 每隔一分钟重置，防止时钟不准
-    resetTimer = setInterval(() => {
-      clockInstance?.reset();
-    }, 60 * 1000);
+    startResetChecker();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
   });
 
   onUnmounted(() => {
-    if (resetTimer) {
-      clearInterval(resetTimer);
-      resetTimer = null;
-    }
+    stopResetChecker();
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
     clockInstance = null;
   });
 }
