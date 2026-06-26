@@ -43,10 +43,11 @@ src/
 ├── hooks/                           # Vue 3 Composables（所有业务逻辑在此）
 │   ├── useWallpaperEngine.ts        # Wallpaper Engine 属性监听 → 响应式状态
 │   ├── useWallpaper.ts              # 壁纸获取/切换/定时刷新核心逻辑
-│   └── useFlipClock.ts              # flipclock 实例化 + 每分钟重置定时器
+│   └── useFlipClock.ts              # flipclock 实例化 + 周期性偏差检查 + 页面可见性处理
 ├── components/                      # 展示型组件（无业务逻辑）
 │   ├── WallpaperBackground.vue       # 根据 mode 渲染 <img> 或 <video>
-│   └── FlipClockWidget.vue          # 挂载 flipclock DOM 节点
+│   ├── FlipClockWidget.vue          # 挂载 flipclock DOM 节点
+│   └── DevToolsPanel.vue            # 开发模式调试面板（仅 import.meta.env.DEV 时渲染）
 ├── styles/global.less               # 全局样式（重置 + flipclock CSS 导入）
 └── types/                           # TypeScript 类型声明
     ├── vue-shim.d.ts                 # .vue 文件模块声明
@@ -68,12 +69,17 @@ App.vue 作为协调层
   │
   └→ FlipClockWidget.vue(props: positionX, positionY, scale)
         ↓ 内部调用 useFlipClock(clockEl)  ← 操纵 flipclock 实例
+        ↓ 周期性偏差检查 + 页面可见性感知（后台暂停/前台恢复）
+
+DevToolsPanel.vue（仅 DEV 模式）
+  ↓ 读写 localStorage 持久化调试属性
+  ↓ 直接调用 window.wallpaperPropertyListener.applyUserProperties 模拟 WE 属性注入
 ```
 
 **关键设计决策**：
 
 1. **Composables 持有所有业务逻辑**：`useWallpaper` 管理定时器、重试链、壁纸切换；`useFlipClock` 管理 flipclock 生命周期；`useWallpaperEngine` 桥接 WE 原生 API 到 Vue 响应式系统
-2. **组件纯展示**：`WallpaperBackground` 和 `FlipClockWidget` 只接收 props 渲染，不包含副作用
+2. **组件纯展示**：`WallpaperBackground` 和 `FlipClockWidget` 只接收 props 渲染，不包含副作用；`DevToolsPanel` 仅在开发模式下出现，通过直接调用 `applyUserProperties` 模拟 WE 属性系统
 3. **App.vue 作为胶水层**：组合 composable 返回值并向下传递，自身不含业务逻辑
 4. **代际计数器（generation）**：`useWallpaper` 中使用 generation 变量防止旧的重试链覆盖新状态（例如用户在重试期间切换到自定义壁纸又切回来）
 
@@ -88,7 +94,7 @@ App.vue 作为协调层
   - `video`: 自定义视频路径（mode == "video" 时显示）
   - `position_x`/`position_y`: 时钟位置（0-100）
   - `scale`: 时钟缩放（0-3，精度 0.01）
-- **重要**：自定义壁纸文件路径需加 `file:///` 前缀（在 `useWallpaperEngine.ts` 中处理）
+- **重要**：自定义壁纸文件路径需加 `file:///` 前缀（在 `useWallpaperEngine.ts` 中处理），**开发模式下除外**（DEV 模式不加前缀，方便使用浏览器可访问的 URL 调试）
 - 自定义壁纸模式下停止自动获取必应壁纸；切回默认模式后恢复
 - 必应壁纸每小时刷新一次，图片 URL 中的分辨率参数会被替换为 `UHD`
 
