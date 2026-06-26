@@ -29,6 +29,8 @@ export function useWallpaper(options: UseWallpaperOptions) {
   let timer: ReturnType<typeof setInterval> | null = null;
   // 代际计数器 — 防止旧的重试链覆盖新状态
   let generation = 0;
+  // 上次请求时间戳 — 用于确保至少间隔一小时才真正请求
+  let lastRequestTime = 0;
 
   /**
    * 查询必应每日壁纸
@@ -71,16 +73,22 @@ export function useWallpaper(options: UseWallpaperOptions) {
   }
 
   /**
-   * 启动定时获取壁纸（每小时一次）
+   * 启动定时获取壁纸（每分钟检查一次，距离上次请求超过一小时才真正请求）
    */
   function startInterval() {
     stopInterval();
     generation++;
-    timer = setInterval(() => {
-      queryImageData();
-    }, 60 * 60 * 1000);
     // 立即获取一次
+    lastRequestTime = Date.now();
     queryImageData();
+    timer = setInterval(() => {
+      const now = Date.now();
+      // 距离上次请求超过一小时才真正发起请求
+      if (now - lastRequestTime >= 60 * 60 * 1000) {
+        lastRequestTime = now;
+        queryImageData();
+      }
+    }, 60 * 1000);
   }
 
   /**
