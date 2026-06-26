@@ -27,8 +27,9 @@ export function useWallpaperEngine() {
     position_y: (value) => { positionY.value = value; },
     scale: (value) => { scale.value = value; },
     mode: (value) => { mode.value = value as "image" | "video"; },
-    image: (value) => { imagePath.value = value ? "file:///" + value : ""; },
-    video: (value) => { videoPath.value = value ? "file:///" + value : ""; },
+    // 开发模式下不添加 file:/// 前缀，方便使用浏览器 URL 调试
+    image: (value) => { imagePath.value = value ? (import.meta.env.DEV ? value : "file:///" + value) : ""; },
+    video: (value) => { videoPath.value = value ? (import.meta.env.DEV ? value : "file:///" + value) : ""; },
   };
 
   // 注册 WE 属性监听器（仅首次调用时执行）
@@ -36,7 +37,7 @@ export function useWallpaperEngine() {
     window.wallpaperPropertyListener = {
       applyUserProperties(properties: Record<string, any>) {
         for (const key of Object.keys(handlers)) {
-          if (properties[key]) {
+          if (properties[key] !== undefined) {
             handlers[key](properties[key].value);
           }
         }
