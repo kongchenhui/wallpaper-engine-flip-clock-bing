@@ -18,7 +18,8 @@ export function useFlipClock(elementRef: Ref<HTMLElement | null>) {
       const displayedTime: Date = clockInstance.value?.value;
       if (!displayedTime) return;
       const diff = Math.abs(displayedTime.getTime() - Date.now());
-      if (diff > 10_000) {
+      console.log("🚀 ~ startResetChecker ~ diff:", diff);
+      if (diff > 3_000) {
         clockInstance.reset();
       }
     }, 5_000);
